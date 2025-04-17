@@ -6,16 +6,16 @@ import ContractForm from "@/components/ContractForm";
 import ContractPreview from "@/components/ContractPreview";
 import Receipt from "@/components/Receipt";
 import EventsCalendar from "@/components/EventsCalendar";
-import { defaultContractData, ContractData, calculateValues } from "@/utils/contractGenerator";
+import { defaultContractData, calculateValues } from "@/utils/contractGenerator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { History, Save, Download } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Index = () => {
-  const [contractData, setContractData] = useState<ContractData>(defaultContractData);
+  const [contractData, setContractData] = useState(defaultContractData);
   
-  const handleContractDataChange = (data: ContractData) => {
+  const handleContractDataChange = (data) => {
     const calculatedData = calculateValues(data);
     setContractData(calculatedData);
   };

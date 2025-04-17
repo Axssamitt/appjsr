@@ -9,11 +9,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import ContractPreview from "@/components/ContractPreview";
 import Receipt from "@/components/Receipt";
 import { getContractById } from "@/utils/storageUtils";
-import { ContractData } from "@/utils/contractGenerator";
 
 const ContractDetail = () => {
-  const { id } = useParams<{ id: string }>();
-  const [contract, setContract] = useState<ContractData | null>(null);
+  const { id } = useParams();
+  const [contract, setContract] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   

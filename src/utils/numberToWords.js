@@ -1,13 +1,13 @@
 
 // Function to convert numbers to words in Portuguese
-export function numberToWords(numero: number): string {
+export function numberToWords(numero) {
   const unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
   const dezADezenove = ['dez', 'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
   const dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
   const centenas = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
 
   // Function to convert chunks of three digits
-  function converterGrupo(n: number): string {
+  function converterGrupo(n) {
     let resultado = '';
     
     // Handle hundreds

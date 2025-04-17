@@ -1,17 +1,9 @@
 
-import { ContractData } from './contractGenerator';
-
-// Interface for stored contract with a unique ID and timestamp
-export interface StoredContract extends ContractData {
-  id: string;
-  createdAt: string;
-}
-
 // In-memory contracts container that will be used for the current session
-let contractsInMemory: StoredContract[] = [];
+let contractsInMemory = [];
 
 // Initialize contracts from a local file or empty array
-export const initializeContracts = (contractsJson?: string) => {
+export const initializeContracts = (contractsJson) => {
   if (contractsJson) {
     try {
       contractsInMemory = JSON.parse(contractsJson);
@@ -25,9 +17,9 @@ export const initializeContracts = (contractsJson?: string) => {
 };
 
 // Save contract to memory and return a downloadable JSON
-export const saveContract = (contract: ContractData): StoredContract => {
+export const saveContract = (contract) => {
   // Create a new contract with ID and timestamp
-  const newContract: StoredContract = {
+  const newContract = {
     ...contract,
     id: generateId(),
     createdAt: new Date().toISOString()
@@ -43,17 +35,17 @@ export const saveContract = (contract: ContractData): StoredContract => {
 };
 
 // Get all contracts from memory
-export const getContracts = (): StoredContract[] => {
+export const getContracts = () => {
   return contractsInMemory;
 };
 
 // Generate a simple unique ID
-const generateId = (): string => {
+const generateId = () => {
   return Date.now().toString(36) + Math.random().toString(36).substring(2);
 };
 
 // Delete a contract by ID
-export const deleteContract = (id: string): boolean => {
+export const deleteContract = (id) => {
   const previousLength = contractsInMemory.length;
   contractsInMemory = contractsInMemory.filter(contract => contract.id !== id);
   
@@ -67,7 +59,7 @@ export const deleteContract = (id: string): boolean => {
 };
 
 // Get a contract by ID
-export const getContractById = (id: string): StoredContract | null => {
+export const getContractById = (id) => {
   const contract = contractsInMemory.find(c => c.id === id);
   return contract || null;
 };
@@ -92,13 +84,13 @@ export const downloadContractsJson = () => {
 };
 
 // Upload contracts from a JSON file
-export const uploadContractsJson = (file: File): Promise<StoredContract[]> => {
+export const uploadContractsJson = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
     reader.onload = (event) => {
       try {
-        const json = event.target?.result as string;
+        const json = event.target?.result;
         contractsInMemory = JSON.parse(json);
         resolve(contractsInMemory);
       } catch (error) {
