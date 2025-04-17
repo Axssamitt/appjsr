@@ -9,8 +9,9 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  base: "/jphcontract",
   plugins: 
-    base: "/jphcontract/",
+    
     [    
     react(),
     mode === 'development' &&
