@@ -1,16 +1,9 @@
 
-import React from 'react'; // Make sure React is explicitly imported
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './index.css';
 import { initializeContracts } from './utils/storageUtils';
-
-// Define a global type for preloaded contracts
-declare global {
-  interface Window {
-    PRELOADED_CONTRACTS?: any[];
-  }
-}
 
 // Initialize contracts from preloaded data or load from localStorage as fallback
 if (window.PRELOADED_CONTRACTS) {
@@ -26,7 +19,7 @@ if (window.PRELOADED_CONTRACTS) {
   }
 }
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
