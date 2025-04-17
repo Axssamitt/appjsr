@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
+    base: "/jphcontracr",
     react(),
     mode === 'development' &&
     componentTagger(),
