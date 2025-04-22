@@ -21,6 +21,6 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     minify: true,
-    sourcemap: false,
+    sourcemap: true,
   },
 }));
