@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // ATENÇÃO: Substitua '/NOME-DO-REPO/' pelo nome do seu repositório.
 // Por ex: se seu repositório for 'contratos-pizzaria', coloque '/contratos-pizzaria/'.
-const GH_PAGES_BASE = '/NOME-DO-REPO/';
+const GH_PAGES_BASE = '/jphcontract/';
 
 export default defineConfig(({ mode }) => ({
   server: {
