@@ -99,61 +99,24 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
             </head>
             <body>
               <div class="receipt-container">
-                <div class="receipt-header">
-                  <div class="receipt-title">RECIBO</div>
-                  <div>Nº</div>
-                  <div class="receipt-number">${receiptNumber}</div>
-                  <div>VALOR</div>
-                  <div class="receipt-value">
-                    ${formatCurrency(contractData.downPayment)}
-                  </div>
-                </div>
-                
-                <div class="receipt-row">
-                  <div class="receipt-label">Recebi(emos) de</div>
-                  <div class="receipt-content">
-                    ${contractData.clientName}
-                  </div>
-                </div>
-                
-                <div class="receipt-row">
-                  <div class="receipt-label">a quantia de</div>
-                  <div class="receipt-content">
-                    ${numberToWords(contractData.downPayment).toUpperCase()}
-                  </div>
-                </div>
-                
-                <div class="receipt-row">
-                  <div class="receipt-label">Correspondente a</div>
-                  <div class="receipt-content">
-                    ENTRADA DO EVENTO A SE REALIZAR NA DATA DE ${contractData.eventDate}
-                  </div>
-                </div>
-                
-                <div class="receipt-row">
-                  <div class="receipt-content"></div>
-                </div>
-                
-                <div>
-                  e para clareza firmo(amos) o presente
-                </div>
-                
-                <div class="receipt-date">
-                  LONDRINA, ${currentDate}
-                </div>
-                
-                <div class="receipt-footer">
-                  <div style="font-size: 24px; font-weight: bold; margin-bottom: 16px;">JULIO'S PIZZA HOUSE</div>
-                  <img 
-                    src="/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png" 
-                    alt="Assinatura" 
-                    style="width: 150px; height: auto; object-fit: contain; opacity: 0.6;"
-                  />
-                </div>
+                ${receiptRef.current.innerHTML}
               </div>
               <div style="text-align: center; margin-top: 30px;">
                 <button onclick="window.print()">Imprimir</button>
               </div>
+              <script>
+                // Garantir que a assinatura seja carregada antes de imprimir
+                window.onload = function() {
+                  const img = document.querySelector(".receipt-footer img");
+                  if (img) {
+                    img.onload = function() {
+                      console.log("Assinatura carregada");
+                    };
+                    // Usar caminho absoluto para a imagem
+                    img.src = "${window.location.origin}/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png";
+                  }
+                };
+              </script>
             </body>
           </html>
         `);
@@ -213,7 +176,7 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
               <div>LONDRINA, {currentDate}</div>
             </div>
             
-            <div className="flex flex-col items-center mt-8 mb-2">
+            <div className="flex flex-col items-center mt-8 mb-2 receipt-footer">
               <div className="text-2xl font-bold mb-4">JULIO'S PIZZA HOUSE</div>
               <img 
                 src="/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png" 

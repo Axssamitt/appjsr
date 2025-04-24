@@ -69,6 +69,19 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
               <div style="text-align: center; margin-top: 30px;">
                 <button onclick="window.print()">Imprimir</button>
               </div>
+              <script>
+                // Garantir que a assinatura seja carregada antes de imprimir
+                window.onload = function() {
+                  const img = document.querySelector(".signature-container img");
+                  if (img) {
+                    img.onload = function() {
+                      console.log("Assinatura carregada");
+                    };
+                    // Usar caminho absoluto para a imagem
+                    img.src = "${window.location.origin}/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png";
+                  }
+                };
+              </script>
             </body>
           </html>
         `);
