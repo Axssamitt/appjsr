@@ -1,4 +1,3 @@
-
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { PrinterIcon, Save } from "lucide-react";
@@ -29,24 +28,30 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
             <head>
               <title>Contrato - Julio's Pizza House</title>
               <style>
+                @page {
+                  size: A4;
+                  margin: 20mm;
+                }
                 body {
                   font-family: Arial, sans-serif;
                   line-height: 1.6;
                   color: #333;
-                  padding: 20px;
+                  padding: 0;
                   max-width: 800px;
                   margin: 0 auto;
+                }
+                .contract-content {
+                  text-align: justify;
+                  font-size: 11pt;
+                  margin-bottom: 20px;
                 }
                 h1 {
                   text-align: center;
                   margin-bottom: 20px;
-                }
-                p {
-                  margin-bottom: 10px;
-                  text-align: justify;
+                  font-size: 14pt;
                 }
                 .signature-container {
-                  margin-top: 40px;
+                  margin-top: 30px;
                   text-align: center;
                 }
                 .signature-container img {
@@ -54,50 +59,33 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
                   height: auto;
                   margin-top: 10px;
                 }
+                .company-name {
+                  font-weight: bold;
+                  font-size: 12pt;
+                  margin-bottom: 10px;
+                }
                 @media print {
-                  body {
-                    padding: 0;
-                  }
-                  button {
-                    display: none;
-                  }
-                  @page {
-                    size: auto;
-                    margin: 20mm;
-                  }
-                  /* Hide URL/domain when printing */
-                  @page :first {
-                    margin-top: 0;
-                  }
+                  body { padding: 0; }
+                  button { display: none; }
+                  @page { margin: 20mm; }
+                  .url { display: none; }
                 }
               </style>
             </head>
             <body>
-              <div>
+              <div class="contract-content">
                 ${contractRef.current.innerHTML}
               </div>
               <div class="signature-container">
-                <div class="text-2xl font-bold mb-2">JULIO'S PIZZA HOUSE</div>
+                <div class="company-name">JULIO'S PIZZA HOUSE</div>
                 <img 
                   src="${imageUrl}" 
-                  alt="Assinatura" 
-                  width="200"
+                  alt="Assinatura"
                 />
               </div>
               <div style="text-align: center; margin-top: 30px;">
                 <button onclick="window.print()">Imprimir</button>
               </div>
-              <script>
-                // Auto-print once everything is loaded
-                window.onload = function() {
-                  const img = document.querySelector(".signature-container img");
-                  if (img) {
-                    img.onload = function() {
-                      console.log("Assinatura carregada completamente");
-                    };
-                  }
-                };
-              </script>
             </body>
           </html>
         `);
@@ -138,7 +126,7 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
           <ScrollArea className="h-[600px] w-full rounded-md border p-4">
             <div 
               ref={contractRef}
-              className="whitespace-pre-line text-sm font-mono leading-relaxed" 
+              className="text-justify whitespace-pre-line text-sm font-mono leading-relaxed" 
               dangerouslySetInnerHTML={{ __html: contractText.replace(/\n/g, '<br>') }}
             />
           </ScrollArea>
