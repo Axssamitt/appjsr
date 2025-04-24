@@ -22,6 +22,8 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
     if (contractRef.current) {
       const printWindow = window.open('', '_blank');
       if (printWindow) {
+        const imageUrl = new URL('/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png', window.location.origin).href;
+        
         printWindow.document.write(`
           <html>
             <head>
@@ -59,6 +61,14 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
                   button {
                     display: none;
                   }
+                  @page {
+                    size: auto;
+                    margin: 20mm;
+                  }
+                  /* Hide URL/domain when printing */
+                  @page :first {
+                    margin-top: 0;
+                  }
                 }
               </style>
             </head>
@@ -66,19 +76,25 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
               <div>
                 ${contractRef.current.innerHTML}
               </div>
+              <div class="signature-container">
+                <div class="text-2xl font-bold mb-2">JULIO'S PIZZA HOUSE</div>
+                <img 
+                  src="${imageUrl}" 
+                  alt="Assinatura" 
+                  width="200"
+                />
+              </div>
               <div style="text-align: center; margin-top: 30px;">
                 <button onclick="window.print()">Imprimir</button>
               </div>
               <script>
-                // Garantir que a assinatura seja carregada antes de imprimir
+                // Auto-print once everything is loaded
                 window.onload = function() {
                   const img = document.querySelector(".signature-container img");
                   if (img) {
                     img.onload = function() {
-                      console.log("Assinatura carregada");
+                      console.log("Assinatura carregada completamente");
                     };
-                    // Usar caminho absoluto para a imagem
-                    img.src = "${window.location.origin}/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png";
                   }
                 };
               </script>
@@ -125,14 +141,6 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
               className="whitespace-pre-line text-sm font-mono leading-relaxed" 
               dangerouslySetInnerHTML={{ __html: contractText.replace(/\n/g, '<br>') }}
             />
-            <div className="signature-container mt-10 text-center">
-              <div className="text-2xl font-bold mb-2">JULIO'S PIZZA HOUSE</div>
-              <img 
-                src="/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png" 
-                alt="Assinatura" 
-                className="w-[200px] h-auto object-contain mx-auto opacity-70"
-              />
-            </div>
           </ScrollArea>
         </CardContent>
         <CardFooter className="flex justify-center border-t bg-muted/20 p-4 gap-2">

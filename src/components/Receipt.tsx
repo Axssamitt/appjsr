@@ -19,6 +19,8 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
     if (receiptRef.current) {
       const printWindow = window.open('', '_blank');
       if (printWindow) {
+        const imageUrl = new URL('/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png', window.location.origin).href;
+        
         printWindow.document.write(`
           <html>
             <head>
@@ -94,26 +96,41 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
                   button {
                     display: none;
                   }
+                  @page {
+                    size: auto;
+                    margin: 20mm;
+                  }
+                  /* Hide URL/domain when printing */
+                  @page :first {
+                    margin-top: 0;
+                  }
                 }
               </style>
             </head>
             <body>
               <div class="receipt-container">
                 ${receiptRef.current.innerHTML}
+                <div class="receipt-footer">
+                  <div class="receipt-date">LONDRINA, ${currentDate}</div>
+                  <div class="text-2xl font-bold mb-2">JULIO'S PIZZA HOUSE</div>
+                  <img 
+                    src="${imageUrl}" 
+                    alt="Assinatura" 
+                    width="150"
+                  />
+                </div>
               </div>
               <div style="text-align: center; margin-top: 30px;">
                 <button onclick="window.print()">Imprimir</button>
               </div>
               <script>
-                // Garantir que a assinatura seja carregada antes de imprimir
+                // Auto-print once everything is loaded
                 window.onload = function() {
                   const img = document.querySelector(".receipt-footer img");
                   if (img) {
                     img.onload = function() {
-                      console.log("Assinatura carregada");
+                      console.log("Assinatura carregada completamente");
                     };
-                    // Usar caminho absoluto para a imagem
-                    img.src = "${window.location.origin}/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png";
                   }
                 };
               </script>
@@ -174,15 +191,6 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
             
             <div className="flex justify-end mb-4">
               <div>LONDRINA, {currentDate}</div>
-            </div>
-            
-            <div className="flex flex-col items-center mt-8 mb-2 receipt-footer">
-              <div className="text-2xl font-bold mb-4">JULIO'S PIZZA HOUSE</div>
-              <img 
-                src="/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png" 
-                alt="Assinatura" 
-                className="w-[150px] h-auto object-contain opacity-60 mb-2"
-              />
             </div>
           </div>
         </div>
