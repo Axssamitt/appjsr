@@ -19,24 +19,29 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
     if (receiptRef.current) {
       const printWindow = window.open('', '_blank');
       if (printWindow) {
-        const imageUrl = new URL('/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png', window.location.origin).href;
+        // Usar URL absoluta para a imagem da assinatura
+        const imageUrl = `${window.location.origin}/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png`;
         
         printWindow.document.write(`
           <html>
             <head>
               <title>Recibo - Julio's Pizza House</title>
               <style>
+                @page {
+                  size: A4;
+                  margin: 15mm;
+                }
                 body {
                   font-family: Arial, sans-serif;
-                  line-height: 1.6;
+                  line-height: 1.5;
                   color: #333;
-                  padding: 20px;
-                  max-width: 800px;
+                  padding: 0;
+                  max-width: 100%;
                   margin: 0 auto;
                 }
                 .receipt-container {
                   border: 2px solid #333;
-                  border-radius: 30px;
+                  border-radius: 20px;
                   padding: 20px;
                   position: relative;
                 }
@@ -46,13 +51,13 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
                   margin-bottom: 20px;
                 }
                 .receipt-title {
-                  font-size: 32px;
+                  font-size: 24px;
                   font-weight: bold;
                   margin-right: 10px;
                 }
                 .receipt-number, .receipt-value {
                   background-color: #aaa;
-                  padding: 8px 15px;
+                  padding: 6px 12px;
                   color: #000;
                   font-weight: bold;
                   margin-left: 10px;
@@ -62,7 +67,7 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
                   margin-bottom: 15px;
                 }
                 .receipt-label {
-                  width: 150px;
+                  width: 120px;
                   font-weight: normal;
                 }
                 .receipt-content {
@@ -75,11 +80,11 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
                   display: flex;
                   flex-direction: column;
                   align-items: center;
-                  margin-top: 40px;
+                  margin-top: 30px;
                 }
                 .receipt-date {
                   align-self: flex-end;
-                  margin-bottom: 20px;
+                  margin-bottom: 15px;
                 }
                 .receipt-signature {
                   margin-top: 10px;
@@ -87,23 +92,13 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
                 }
                 .receipt-signature img {
                   width: 150px;
-                  margin-bottom: 10px;
+                  margin: 5px 0;
                 }
                 @media print {
-                  body {
-                    padding: 0;
-                  }
-                  button {
-                    display: none;
-                  }
-                  @page {
-                    size: auto;
-                    margin: 20mm;
-                  }
-                  /* Hide URL/domain when printing */
-                  @page :first {
-                    margin-top: 0;
-                  }
+                  body { padding: 0; }
+                  button { display: none; }
+                  @page { margin: 15mm; }
+                  a[href]:after { content: none !important; }
                 }
               </style>
             </head>
@@ -112,7 +107,7 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
                 ${receiptRef.current.innerHTML}
                 <div class="receipt-footer">
                   <div class="receipt-date">LONDRINA, ${currentDate}</div>
-                  <div class="text-2xl font-bold mb-2">JULIO'S PIZZA HOUSE</div>
+                  <div style="font-weight: bold; font-size: 12pt; margin-bottom: 5px;">JULIO'S PIZZA HOUSE</div>
                   <img 
                     src="${imageUrl}" 
                     alt="Assinatura" 
@@ -120,18 +115,17 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
                   />
                 </div>
               </div>
-              <div style="text-align: center; margin-top: 30px;">
+              <div style="text-align: center; margin-top: 20px;">
                 <button onclick="window.print()">Imprimir</button>
               </div>
               <script>
-                // Auto-print once everything is loaded
+                // Verificar se a imagem carregou corretamente
                 window.onload = function() {
-                  const img = document.querySelector(".receipt-footer img");
-                  if (img) {
-                    img.onload = function() {
-                      console.log("Assinatura carregada completamente");
-                    };
-                  }
+                  const img = document.querySelector('.receipt-footer img');
+                  img.onerror = function() {
+                    console.error('Erro ao carregar imagem');
+                    img.src = '${window.location.origin}/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png';
+                  };
                 };
               </script>
             </body>
@@ -151,7 +145,7 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
       </CardHeader>
       <CardContent>
         <div ref={receiptRef} className="receipt">
-          <div className="border-2 border-black rounded-[30px] p-5 relative">
+          <div className="border-2 border-black rounded-[20px] p-5 relative">
             <div className="flex items-center mb-6">
               <div className="text-3xl font-bold mr-2">RECIBO</div>
               <div className="ml-2">Nº</div>
@@ -187,10 +181,6 @@ const Receipt: React.FC<ReceiptProps> = ({ contractData }) => {
             
             <div className="mb-8">
               e para clareza firmo(amos) o presente
-            </div>
-            
-            <div className="flex justify-end mb-4">
-              <div>LONDRINA, {currentDate}</div>
             </div>
           </div>
         </div>

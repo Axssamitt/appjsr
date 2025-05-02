@@ -1,3 +1,4 @@
+
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { PrinterIcon, Save } from "lucide-react";
@@ -21,7 +22,8 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
     if (contractRef.current) {
       const printWindow = window.open('', '_blank');
       if (printWindow) {
-        const imageUrl = new URL('/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png', window.location.origin).href;
+        // Usar URL absoluta para a imagem da assinatura
+        const imageUrl = `${window.location.origin}/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png`;
         
         printWindow.document.write(`
           <html>
@@ -30,44 +32,46 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
               <style>
                 @page {
                   size: A4;
-                  margin: 20mm;
+                  margin: 15mm;
                 }
                 body {
                   font-family: Arial, sans-serif;
-                  line-height: 1.6;
+                  line-height: 1.5;
                   color: #333;
                   padding: 0;
-                  max-width: 800px;
+                  max-width: 100%;
                   margin: 0 auto;
+                  font-size: 10pt;
                 }
                 .contract-content {
                   text-align: justify;
-                  font-size: 11pt;
-                  margin-bottom: 20px;
+                  margin-bottom: 10px;
                 }
                 h1 {
                   text-align: center;
-                  margin-bottom: 20px;
+                  margin-bottom: 10px;
                   font-size: 14pt;
                 }
                 .signature-container {
-                  margin-top: 30px;
+                  margin-top: 20px;
                   text-align: center;
+                  page-break-inside: avoid;
                 }
                 .signature-container img {
-                  width: 200px;
+                  width: 150px;
                   height: auto;
-                  margin-top: 10px;
+                  margin: 5px 0;
                 }
                 .company-name {
                   font-weight: bold;
                   font-size: 12pt;
-                  margin-bottom: 10px;
+                  margin-bottom: 5px;
                 }
                 @media print {
                   body { padding: 0; }
                   button { display: none; }
-                  @page { margin: 20mm; }
+                  @page { margin: 15mm; }
+                  a[href]:after { content: none !important; }
                   .url { display: none; }
                 }
               </style>
@@ -77,15 +81,26 @@ const ContractPreview: React.FC<ContractPreviewProps> = ({ contractData }) => {
                 ${contractRef.current.innerHTML}
               </div>
               <div class="signature-container">
+                <p>LONDRINA, ${new Date().toLocaleDateString('pt-BR')}</p>
                 <div class="company-name">JULIO'S PIZZA HOUSE</div>
                 <img 
                   src="${imageUrl}" 
                   alt="Assinatura"
                 />
               </div>
-              <div style="text-align: center; margin-top: 30px;">
+              <div style="text-align: center; margin-top: 20px;">
                 <button onclick="window.print()">Imprimir</button>
               </div>
+              <script>
+                // Verificar se a imagem carregou corretamente
+                window.onload = function() {
+                  const img = document.querySelector('.signature-container img');
+                  img.onerror = function() {
+                    console.error('Erro ao carregar imagem');
+                    img.src = '${window.location.origin}/lovable-uploads/340c9b38-0cac-4c58-a897-54ee0dd2412b.png';
+                  };
+                };
+              </script>
             </body>
           </html>
         `);

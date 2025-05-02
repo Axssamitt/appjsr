@@ -5,10 +5,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Julio's Pizza House - Gerador de Contratos</title>
+    <meta name="description" content="Sistema de geração de contratos para eventos de pizza">
+    <meta name="theme-color" content="#f97316">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/lovable-uploads/d8c57a49-926b-4fd9-bae2-9e73c7385732.png">
+    <link rel="apple-touch-icon" href="/lovable-uploads/d8c57a49-926b-4fd9-bae2-9e73c7385732.png">
   </head>
   <body>
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Registrar o Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('Service Worker registrado com sucesso:', registration.scope);
+            })
+            .catch(error => {
+              console.log('Falha ao registrar o Service Worker:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

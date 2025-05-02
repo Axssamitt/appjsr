@@ -1,14 +1,23 @@
 
-import React from "react"; // Make sure React is explicitly imported
+import React, { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import History from "./pages/History";
-import ContractDetail from "./pages/ContractDetail";
-import NotFound from "./pages/NotFound";
+
+// Lazy loading das páginas
+const Index = lazy(() => import("./pages/Index"));
+const History = lazy(() => import("./pages/History"));
+const ContractDetail = lazy(() => import("./pages/ContractDetail"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Loading fallback
+const PageLoader = () => (
+  <div className="flex min-h-screen items-center justify-center">
+    <div className="animate-pulse">Carregando...</div>
+  </div>
+);
 
 // Create a new client with specific configurations to avoid issues
 const queryClient = new QueryClient({
@@ -16,6 +25,8 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: false,
+      staleTime: 5 * 60 * 1000, // 5 minutos
+      cacheTime: 10 * 60 * 1000, // 10 minutos
     },
   },
 });
@@ -27,13 +38,14 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/contract/:id" element={<ContractDetail />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/contract/:id" element={<ContractDetail />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

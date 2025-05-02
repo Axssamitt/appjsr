@@ -1,0 +1,24 @@
+
+{
+  "name": "Julio's Pizza House - Gerador de Contratos",
+  "short_name": "Contratos JPH",
+  "description": "Aplicativo para geração e gerenciamento de contratos da Julio's Pizza House",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "lovable-uploads/d8c57a49-926b-4fd9-bae2-9e73c7385732.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "lovable-uploads/d8c57a49-926b-4fd9-bae2-9e73c7385732.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
