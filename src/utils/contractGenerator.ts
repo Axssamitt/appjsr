@@ -94,6 +94,17 @@ export const formatCpf = (cpf: string): string => {
     .substring(0, 14);
 };
 
+// Função para formatar CNPJ
+export const formatCnpj = (cnpj: string): string => {
+  return cnpj
+    .replace(/\D/g, '')
+    .replace(/^(\d{2})(\d)/, '$1.$2')
+    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+    .replace(/\.(\d{3})(\d)/, '.$1/$2')
+    .replace(/(\d{4})(\d)/, '$1-$2')
+    .substring(0, 18);
+};
+
 // Função para gerar o texto do contrato - Otimizado para caber em 2 páginas
 export const generateContractText = (data: ContractData): string => {
   const remainingPayment = data.totalValue - data.downPayment;
@@ -109,12 +120,15 @@ export const generateContractText = (data: ContractData): string => {
     : '';
 
   const currentDate = new Date().toLocaleDateString('pt-BR');
+  
+  // Verificar se é CPF ou CNPJ pelo tamanho
+  const documentType = data.clientCpf.replace(/\D/g, '').length > 11 ? "CNPJ" : "CPF";
 
   // Texto do contrato otimizado para caber em 2 páginas
   return `
 <strong>JULIO'S PIZZA HOUSE</strong>
 
-<strong>CONTRATANTE:</strong> ${data.clientName.toUpperCase()}, CPF/CNPJ: n°${data.clientCpf}, RG: nº ${data.clientRg} residente em Rua: ${data.clientAddress.toUpperCase()}.
+<strong>CONTRATANTE:</strong> ${data.clientName.toUpperCase()}, ${documentType}: n°${data.clientCpf}${data.clientRg ? `, RG: nº ${data.clientRg}` : ''} residente em Rua: ${data.clientAddress.toUpperCase()}.
 
 <strong>CONTRATADA:</strong> JULIO'S PIZZA HOUSE, com sede em Londrina, na Rua Alzira Postali Gewrher, nº 119, bairro Jardim Catuai, Cep 86086-230, no Estado Paraná, inscrita no CPF sob o nº 034.988.389-03, neste ato representada pelo Responsável Sr. Júlio Cesar Fermino.
 

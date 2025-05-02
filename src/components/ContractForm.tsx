@@ -13,6 +13,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 import { 
   ContractData, 
@@ -20,8 +21,10 @@ import {
   calculateValues, 
   formatCurrency,
   formatCpf,
+  formatCnpj,
   calculateBaseWaiters
 } from "@/utils/contractGenerator";
+import { saveContract } from "@/utils/storageUtils";
 
 interface ContractFormProps {
   onContractDataChange: (data: ContractData) => void;
@@ -39,6 +42,7 @@ export function ContractForm({ onContractDataChange }: ContractFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [eventDate, setEventDate] = useState<Date | undefined>();
   const [priceDialogOpen, setPriceDialogOpen] = useState(false);
+  const { toast } = useToast();
   
   // Estados temporários para edição de preços
   const [tempAdultPrice, setTempAdultPrice] = useState(contractData.adultPrice);
@@ -68,16 +72,28 @@ export function ContractForm({ onContractDataChange }: ContractFormProps) {
     }
   }, [eventDate]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  // Função para formatar CPF ou CNPJ com base no tamanho
+  const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const numbersOnly = value.replace(/\D/g, '');
     
-    if (name === "clientCpf") {
+    // CPF tem 11 dígitos e CNPJ tem 14 dígitos
+    // Usa formatação diferente baseada no comprimento
+    if (numbersOnly.length <= 11) {
       setContractData(prev => ({
         ...prev,
-        [name]: formatCpf(value)
+        clientCpf: formatCpf(value)
       }));
-      return;
+    } else {
+      setContractData(prev => ({
+        ...prev,
+        clientCpf: formatCnpj(value)
+      }));
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     
     if (name === "adultCount" || name === "childCount" || name === "extraWaiters") {
       setContractData(prev => ({
@@ -132,6 +148,23 @@ export function ContractForm({ onContractDataChange }: ContractFormProps) {
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+    }
+  };
+  
+  const handleComplete = () => {
+    try {
+      saveContract(contractData);
+      toast({
+        title: "Contrato salvo",
+        description: "O contrato foi salvo com sucesso no histórico.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar o contrato.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -193,18 +226,18 @@ export function ContractForm({ onContractDataChange }: ContractFormProps) {
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="clientCpf">CPF</Label>
+                  <Label htmlFor="clientCpf">CPF/CNPJ</Label>
                   <Input 
                     id="clientCpf" 
                     name="clientCpf"
-                    placeholder="000.000.000-00" 
+                    placeholder="000.000.000-00 ou 00.000.000/0000-00" 
                     value={contractData.clientCpf}
-                    onChange={handleInputChange}
-                    maxLength={14}
+                    onChange={handleDocumentChange}
+                    maxLength={18}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="clientRg">RG</Label>
+                  <Label htmlFor="clientRg">RG (opcional)</Label>
                   <Input 
                     id="clientRg" 
                     name="clientRg" 
@@ -498,17 +531,22 @@ export function ContractForm({ onContractDataChange }: ContractFormProps) {
             Anterior
           </Button>
           
-          <Button
-            onClick={nextStep}
-            disabled={currentStep === formSteps.length - 1}
-            className={cn(
-              "transition-opacity",
-              currentStep === formSteps.length - 1 ? "opacity-0 pointer-events-none" : "opacity-100"
-            )}
-          >
-            Próximo
-            <ArrowRightIcon className="ml-2 h-4 w-4" />
-          </Button>
+          {currentStep < formSteps.length - 1 ? (
+            <Button
+              onClick={nextStep}
+              className="transition-opacity"
+            >
+              Próximo
+              <ArrowRightIcon className="ml-2 h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleComplete}
+              className="transition-opacity"
+            >
+              Concluir
+            </Button>
+          )}
         </CardFooter>
       </Card>
     </motion.div>
